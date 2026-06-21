@@ -1,0 +1,19 @@
+{
+  "name": "noti-playground",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@8.9.2",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @noti-playground/web --filter @noti-playground/api dev",
+    "dev:web": "pnpm --filter @noti-playground/web dev",
+    "dev:api": "pnpm --filter @noti-playground/api dev",
+    "build": "pnpm -r build",
+    "build:web": "pnpm --filter @noti-playground/web build",
+    "build:api": "pnpm --filter @noti-playground/api build",
+    "lint": "pnpm -r lint",
+    "lint:web": "pnpm --filter @noti-playground/web lint",
+    "lint:api": "pnpm --filter @noti-playground/api lint",
+    "test": "pnpm --filter @noti-playground/api test",
+    "test:api": "pnpm --filter @noti-playground/api test"
+  }
+}

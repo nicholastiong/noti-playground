@@ -1,6 +1,16 @@
 # API
 
-Future backend application for `noti-playground`.
+Fastify TypeScript backend for `noti-playground`.
 
-The implementation language and framework are intentionally undecided so this
-folder can evolve with future backend experiments.
+## Development
+
+```bash
+pnpm dev:api
+```
+
+The app runs on `http://localhost:4000` by default.
+
+## Endpoints
+
+- `GET /healthz`
+- `GET /version`

@@ -1,5 +1,11 @@
-# Web
+# Web App
 
-Future frontend application for `noti-playground`.
+Next.js frontend for `noti-playground`.
 
-No framework or package manager configuration has been added yet.
+## Development
+
+```bash
+pnpm dev:web
+```
+
+The app runs on `http://localhost:3000` by default.
