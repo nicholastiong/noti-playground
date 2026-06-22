@@ -54,6 +54,18 @@ Default local ports:
 - Web: `http://localhost:3000`
 - API: `http://localhost:4000`
 
+## Web Push
+
+Generate VAPID keys before testing browser push notifications:
+
+```bash
+pnpm --filter @noti-playground/api vapid:keys
+```
+
+Copy the printed values into `apps/api/.env` using `apps/api/.env.example` as
+the template, then run `pnpm dev`. The API scripts load `apps/api/.env`
+automatically for local development and local starts.
+
 ## Notes
 
 - Shared packages are not included yet. Add `packages/` later only when shared
