@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Instrument_Serif, JetBrains_Mono } from 'next/font/google';
+import { IBM_Plex_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import Link from 'next/link';
 import Script from 'next/script';
 import { ALGORITHMS } from '@/algorithms/meta';
@@ -24,6 +24,12 @@ const mono = JetBrains_Mono({
   weight: ['300', '400', '500', '700'],
 });
 
+const sans = IBM_Plex_Sans({
+  variable: '--font-sans',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+});
+
 export const metadata: Metadata = {
   title: {
     default: 'Trace — algorithm studies',
@@ -35,7 +41,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${serif.variable} ${mono.variable} ${sans.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT}

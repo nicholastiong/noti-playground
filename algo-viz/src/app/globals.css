@@ -21,8 +21,8 @@
   /* Derived — these follow the channel vars, so themes only swap the base hues. */
   --rule: rgba(var(--bone-rgb), 0.11);
   --rule-2: rgba(var(--bone-rgb), 0.055);
-  --bone-dim: rgba(var(--bone-rgb), 0.52);
-  --bone-faint: rgba(var(--bone-rgb), 0.3);
+  --bone-dim: rgba(var(--bone-rgb), 0.68);
+  --bone-faint: rgba(var(--bone-rgb), 0.46);
 
   --sq-light: #cfc7b3;
   --sq-dark: #2a3038;
@@ -32,6 +32,7 @@
 
   --serif: var(--font-serif), Georgia, serif;
   --mono: var(--font-mono), ui-monospace, monospace;
+  --sans: var(--font-sans), system-ui, sans-serif;
 
   --header-h: 61px;
   color-scheme: dark;
@@ -85,9 +86,9 @@ body {
 body {
   background: var(--ink);
   color: var(--bone);
-  font-family: var(--mono);
-  font-weight: 300;
-  font-size: 13px;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -135,7 +136,7 @@ a {
 
 /* Small-caps section label with a rule trailing off to the right. */
 .lab {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--bone-faint);
@@ -153,7 +154,7 @@ a {
 
 .btn {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 300;
   background: transparent;
   color: var(--bone-dim);
@@ -190,7 +191,7 @@ a {
 }
 
 .kbd {
-  font-size: 9px;
+  font-size: 10px;
   opacity: 0.5;
   border: 1px solid currentColor;
   border-radius: 2px;
@@ -207,7 +208,7 @@ a {
 }
 .seg button {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 300;
   background: transparent;
   color: var(--bone-dim);
@@ -264,7 +265,8 @@ a {
 }
 
 .chip {
-  font-size: 10.5px;
+  font-family: var(--mono);
+  font-size: 11.5px;
   padding: 2px 7px;
   border: 1px solid var(--rule);
   border-radius: 2px;

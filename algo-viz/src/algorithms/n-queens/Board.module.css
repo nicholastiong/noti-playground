@@ -8,7 +8,7 @@
   position: absolute;
   display: grid;
   color: var(--bone-faint);
-  font-size: 9.5px;
+  font-size: 10.5px;
   letter-spacing: 0.14em;
 }
 .ranks {
@@ -193,7 +193,7 @@
 }
 
 .hint {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--bone-faint);
   margin-top: -6px;
   padding-left: 26px;
@@ -212,7 +212,7 @@
   gap: 9px;
 }
 .mode span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--bone-dim);
 }
 
@@ -226,7 +226,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 12px;
   padding: 3px 8px;
   border-left: 2px solid var(--rule-2);
   color: var(--bone-faint);
@@ -248,7 +248,7 @@
   display: flex;
   gap: 9px;
   align-items: flex-start;
-  font-size: 11px;
+  font-size: 12px;
 }
 .setName {
   width: 52px;
