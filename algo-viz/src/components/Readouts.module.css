@@ -2,7 +2,7 @@
 .status {
   border: 1px solid var(--rule);
   border-left: 2px solid var(--brass);
-  background: rgba(233, 226, 210, 0.025);
+  background: rgba(var(--bone-rgb), 0.025);
   padding: 11px 14px;
   font-size: 12px;
   display: flex;

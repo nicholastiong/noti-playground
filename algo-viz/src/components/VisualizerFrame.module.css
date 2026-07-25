@@ -16,7 +16,7 @@
 
 .right {
   border-left: 1px solid var(--rule);
-  background: linear-gradient(180deg, var(--ink-2), #0c0e12);
+  background: linear-gradient(180deg, var(--ink-2), var(--ink));
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -101,9 +101,9 @@
 
 .warn {
   margin: 12px clamp(16px, 2vw, 26px) 0;
-  border: 1px solid rgba(196, 85, 58, 0.4);
-  background: rgba(196, 85, 58, 0.08);
-  color: #e6a48f;
+  border: 1px solid rgba(var(--oxide-rgb), 0.4);
+  background: rgba(var(--oxide-rgb), 0.08);
+  color: var(--warn-ink);
   font-size: 10.5px;
   padding: 7px 10px;
   border-radius: 2px;
@@ -112,7 +112,7 @@
 .inspector {
   border-top: 1px solid var(--rule);
   padding: 14px clamp(16px, 2vw, 26px) 20px;
-  background: rgba(0, 0, 0, 0.22);
+  background: rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
   gap: 13px;

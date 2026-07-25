@@ -42,7 +42,7 @@ export default function Board({
 
         <div
           className={styles.board}
-          style={{ gridTemplateColumns: `repeat(${n},1fr)` }}
+          style={{ gridTemplateColumns: `repeat(${n},1fr)`, '--n': n } as React.CSSProperties}
           ref={boardRef}
         >
           {/* Threat rays: drawn over the squares, in board coordinates. */}

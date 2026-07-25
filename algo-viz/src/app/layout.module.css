@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 26px;
-  background: rgba(10, 11, 13, 0.7);
+  background: rgba(var(--ink-rgb), 0.7);
   backdrop-filter: blur(8px);
 }
 
@@ -57,7 +57,7 @@
 .navLink:hover {
   color: var(--bone);
   border-color: var(--rule);
-  background: rgba(233, 226, 210, 0.04);
+  background: rgba(var(--bone-rgb), 0.04);
 }
 
 @media (max-width: 620px) {

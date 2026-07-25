@@ -2,9 +2,9 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border: 1px solid rgba(233, 226, 210, 0.14);
+  border: 1px solid rgba(var(--bone-rgb), 0.14);
   background:
-    radial-gradient(70% 60% at 50% 40%, rgba(214, 162, 68, 0.05), transparent 70%),
+    radial-gradient(70% 60% at 50% 40%, rgba(var(--brass-rgb), 0.05), transparent 70%),
     var(--ink-3);
   box-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
 }
@@ -18,7 +18,7 @@
 
 /* ── edges ────────────────────────────────────────────── */
 .edge {
-  stroke: rgba(233, 226, 210, 0.16);
+  stroke: rgba(var(--bone-rgb), 0.16);
   stroke-width: 0.45;
   transition:
     stroke 0.2s,
@@ -26,11 +26,11 @@
 }
 
 .arrow {
-  fill: rgba(233, 226, 210, 0.3);
+  fill: rgba(var(--bone-rgb), 0.3);
 }
 
 .tree {
-  stroke: rgba(214, 162, 68, 0.55);
+  stroke: rgba(var(--brass-rgb), 0.55);
   stroke-width: 0.8;
 }
 
@@ -40,7 +40,7 @@
   stroke-linecap: round;
   stroke-dasharray: 2 1.4;
   animation: dash 0.9s linear infinite;
-  filter: drop-shadow(0 0 1.6px rgba(196, 85, 58, 0.8));
+  filter: drop-shadow(0 0 1.6px rgba(var(--oxide-rgb), 0.8));
 }
 @keyframes dash {
   to {
@@ -52,7 +52,7 @@
   stroke: var(--oxide);
   stroke-width: 1.4;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 2.4px rgba(196, 85, 58, 0.85));
+  filter: drop-shadow(0 0 2.4px rgba(var(--oxide-rgb), 0.85));
 }
 
 .cycleArrow {
@@ -61,7 +61,7 @@
 
 .weight circle {
   fill: var(--ink);
-  stroke: rgba(233, 226, 210, 0.1);
+  stroke: rgba(var(--bone-rgb), 0.1);
   stroke-width: 0.2;
 }
 .weight text {
@@ -70,7 +70,7 @@
   fill: var(--bone-faint);
 }
 .negative circle {
-  stroke: rgba(196, 85, 58, 0.6);
+  stroke: rgba(var(--oxide-rgb), 0.6);
 }
 .negative text {
   fill: var(--oxide);
@@ -83,7 +83,7 @@
 
 .disc {
   fill: var(--ink-2);
-  stroke: rgba(233, 226, 210, 0.28);
+  stroke: rgba(var(--bone-rgb), 0.28);
   stroke-width: 0.4;
   transition:
     fill 0.2s,
@@ -92,7 +92,7 @@
 
 .ring {
   fill: none;
-  stroke: rgba(233, 226, 210, 0.22);
+  stroke: rgba(var(--bone-rgb), 0.22);
   stroke-width: 0.3;
   stroke-dasharray: 1.4 1.2;
 }
@@ -113,8 +113,8 @@
 }
 
 .reached .disc {
-  fill: rgba(214, 162, 68, 0.14);
-  stroke: rgba(214, 162, 68, 0.7);
+  fill: rgba(var(--brass-rgb), 0.14);
+  stroke: rgba(var(--brass-rgb), 0.7);
 }
 .reached .dist {
   fill: var(--brass);
@@ -126,7 +126,7 @@
 .from .disc {
   stroke: var(--brass-hi);
   stroke-width: 0.9;
-  filter: drop-shadow(0 0 2.4px rgba(240, 200, 119, 0.7));
+  filter: drop-shadow(0 0 2.4px rgba(var(--brass-hi-rgb), 0.7));
 }
 
 .to .disc {
@@ -135,7 +135,7 @@
 }
 
 .onCycle .disc {
-  fill: rgba(196, 85, 58, 0.22);
+  fill: rgba(var(--oxide-rgb), 0.22);
   stroke: var(--oxide);
   stroke-width: 0.9;
 }
@@ -165,7 +165,7 @@
   border: 1px dashed var(--bone-faint);
 }
 .swTree {
-  background: rgba(214, 162, 68, 0.25);
+  background: rgba(var(--brass-rgb), 0.25);
   border: 1px solid var(--brass);
 }
 .swScan {
@@ -217,8 +217,8 @@
   color: var(--bone-dim);
 }
 .cell.isReached {
-  border-color: rgba(214, 162, 68, 0.5);
-  background: rgba(214, 162, 68, 0.08);
+  border-color: rgba(var(--brass-rgb), 0.5);
+  background: rgba(var(--brass-rgb), 0.08);
 }
 .cell.isReached .val,
 .cell.isReached b {

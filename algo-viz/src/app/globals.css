@@ -3,27 +3,70 @@
    ══════════════════════════════════════════════════════ */
 :root {
   --ink: #0a0b0d;
+  --ink-rgb: 10, 11, 13;
   --ink-2: #101318;
   --ink-3: #161a21;
-  --rule: rgba(233, 226, 210, 0.11);
-  --rule-2: rgba(233, 226, 210, 0.055);
   --bone: #e9e2d2;
-  --bone-dim: rgba(233, 226, 210, 0.52);
-  --bone-faint: rgba(233, 226, 210, 0.3);
+  --bone-rgb: 233, 226, 210;
   --brass: #d6a244;
+  --brass-rgb: 214, 162, 68;
   --brass-hi: #f0c877;
+  --brass-hi-rgb: 240, 200, 119;
   --oxide: #c4553a;
+  --oxide-rgb: 196, 85, 58;
   --sage: #7fa07c;
+  --sage-rgb: 127, 160, 124;
   --steel: #9bb8d6;
+
+  /* Derived — these follow the channel vars, so themes only swap the base hues. */
+  --rule: rgba(var(--bone-rgb), 0.11);
+  --rule-2: rgba(var(--bone-rgb), 0.055);
+  --bone-dim: rgba(var(--bone-rgb), 0.52);
+  --bone-faint: rgba(var(--bone-rgb), 0.3);
 
   --sq-light: #cfc7b3;
   --sq-dark: #2a3038;
+  --on-brass: #100d06;
+  --warn-ink: #e6a48f;
+  --code-number: #d98b6e;
 
   --serif: var(--font-serif), Georgia, serif;
   --mono: var(--font-mono), ui-monospace, monospace;
 
   --header-h: 61px;
   color-scheme: dark;
+}
+
+/* ── light theme — warm paper, same brass-and-oxide language ── */
+:root[data-theme='light'] {
+  --ink: #f3efe3;
+  --ink-rgb: 243, 239, 227;
+  --ink-2: #ebe5d5;
+  --ink-3: #e3dcc9;
+  --bone: #262218;
+  --bone-rgb: 38, 34, 24;
+  --brass: #96700f;
+  --brass-rgb: 150, 112, 15;
+  --brass-hi: #7a5a08;
+  --brass-hi-rgb: 122, 90, 8;
+  --oxide: #b0432a;
+  --oxide-rgb: 176, 67, 42;
+  --sage: #587a55;
+  --sage-rgb: 88, 122, 85;
+  --steel: #3f6788;
+
+  --rule: rgba(var(--bone-rgb), 0.16);
+  --rule-2: rgba(var(--bone-rgb), 0.08);
+  --bone-dim: rgba(var(--bone-rgb), 0.64);
+  --bone-faint: rgba(var(--bone-rgb), 0.42);
+
+  --sq-light: #efe8d3;
+  --sq-dark: #a79d80;
+  --on-brass: #fdf9ee;
+  --warn-ink: #8a3a24;
+  --code-number: #a4451f;
+
+  color-scheme: light;
 }
 
 * {
@@ -58,8 +101,8 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(120vw 80vh at 12% -10%, rgba(214, 162, 68, 0.1), transparent 60%),
-    radial-gradient(90vw 70vh at 105% 110%, rgba(127, 160, 124, 0.07), transparent 60%);
+    radial-gradient(120vw 80vh at 12% -10%, rgba(var(--brass-rgb), 0.1), transparent 60%),
+    radial-gradient(90vw 70vh at 105% 110%, rgba(var(--sage-rgb), 0.07), transparent 60%);
 }
 
 body::after {
@@ -78,7 +121,7 @@ a {
 }
 
 ::selection {
-  background: rgba(214, 162, 68, 0.28);
+  background: rgba(var(--brass-rgb), 0.28);
 }
 
 :focus-visible {
@@ -127,7 +170,7 @@ a {
 .btn:hover:not(:disabled) {
   border-color: var(--bone-faint);
   color: var(--bone);
-  background: rgba(233, 226, 210, 0.04);
+  background: rgba(var(--bone-rgb), 0.04);
 }
 .btn:disabled {
   opacity: 0.3;
@@ -136,14 +179,14 @@ a {
 .btn.pri {
   background: var(--brass);
   border-color: var(--brass);
-  color: #100d06;
+  color: var(--on-brass);
   font-weight: 500;
   padding: 8px 18px;
 }
 .btn.pri:hover:not(:disabled) {
   background: var(--brass-hi);
   border-color: var(--brass-hi);
-  color: #100d06;
+  color: var(--on-brass);
 }
 
 .kbd {
@@ -178,12 +221,12 @@ a {
   border-right: 0;
 }
 .seg button:hover {
-  background: rgba(233, 226, 210, 0.05);
+  background: rgba(var(--bone-rgb), 0.05);
   color: var(--bone);
 }
 .seg button[aria-pressed='true'] {
   background: var(--brass);
-  color: #100d06;
+  color: var(--on-brass);
   font-weight: 500;
 }
 
@@ -213,7 +256,7 @@ a {
 }
 .switch[aria-checked='true'] {
   border-color: var(--brass);
-  background: rgba(214, 162, 68, 0.16);
+  background: rgba(var(--brass-rgb), 0.16);
 }
 .switch[aria-checked='true']::after {
   left: 20px;
@@ -232,7 +275,7 @@ a {
 .chip.on {
   border-color: var(--brass);
   color: var(--brass);
-  background: rgba(214, 162, 68, 0.1);
+  background: rgba(var(--brass-rgb), 0.1);
 }
 .chip.ghost {
   opacity: 0.32;
@@ -265,11 +308,11 @@ input[type='range']::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--brass);
   margin-top: -4.5px;
-  box-shadow: 0 0 0 3px rgba(214, 162, 68, 0.18);
+  box-shadow: 0 0 0 3px rgba(var(--brass-rgb), 0.18);
   transition: box-shadow 0.15s;
 }
 input[type='range']:hover::-webkit-slider-thumb {
-  box-shadow: 0 0 0 6px rgba(214, 162, 68, 0.22);
+  box-shadow: 0 0 0 6px rgba(var(--brass-rgb), 0.22);
 }
 input[type='range']::-moz-range-thumb {
   width: 11px;

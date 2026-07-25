@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
 import { Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import Link from 'next/link';
+import Script from 'next/script';
 import { ALGORITHMS } from '@/algorithms/meta';
+import ThemeToggle from '@/components/ThemeToggle';
 import './globals.css';
 import styles from './layout.module.css';
+
+/** Runs before paint so a stored light preference never flashes dark. */
+const THEME_INIT = `try{if(localStorage.getItem('theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}`;
 
 // Self-hosted at build time by next/font — no external request, no layout shift.
 const serif = Instrument_Serif({
@@ -30,8 +35,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${serif.variable} ${mono.variable}`}>
+    <html lang="en" className={`${serif.variable} ${mono.variable}`} suppressHydrationWarning>
       <body>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {THEME_INIT}
+        </Script>
         <header className={styles.header}>
           <Link href="/" className={styles.wordmark}>
             <span className={styles.mark}>Trace</span>
@@ -44,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
             ))}
           </nav>
+          <ThemeToggle />
         </header>
         {children}
       </body>

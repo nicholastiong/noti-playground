@@ -51,7 +51,7 @@
   padding: 20px 20px 18px;
   border: 1px solid var(--rule);
   border-radius: 2px;
-  background: linear-gradient(160deg, rgba(233, 226, 210, 0.03), transparent 60%);
+  background: linear-gradient(160deg, rgba(var(--bone-rgb), 0.03), transparent 60%);
   overflow: hidden;
   transition:
     border-color 0.2s,
@@ -63,13 +63,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(80% 70% at 100% 0%, rgba(214, 162, 68, 0.14), transparent 65%);
+  background: radial-gradient(80% 70% at 100% 0%, rgba(var(--brass-rgb), 0.14), transparent 65%);
   opacity: 0;
   transition: opacity 0.25s;
   pointer-events: none;
 }
 .card:hover {
-  border-color: rgba(214, 162, 68, 0.45);
+  border-color: rgba(var(--brass-rgb), 0.45);
   transform: translateY(-2px);
 }
 .card:hover::after {
