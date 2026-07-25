@@ -1,0 +1,275 @@
+.frame {
+  position: relative;
+  padding: 22px 22px 22px 26px;
+}
+
+.ranks,
+.files {
+  position: absolute;
+  display: grid;
+  color: var(--bone-faint);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+}
+.ranks {
+  left: 2px;
+  top: 22px;
+  bottom: 22px;
+  align-items: center;
+  justify-items: center;
+  width: 20px;
+}
+.files {
+  left: 26px;
+  right: 22px;
+  bottom: 2px;
+  justify-items: center;
+  height: 16px;
+  align-items: center;
+}
+
+.board {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  border: 1px solid rgba(233, 226, 210, 0.22);
+  box-shadow:
+    0 26px 60px -24px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 6px rgba(10, 11, 13, 0.5);
+  background: var(--ink-3);
+}
+
+.square {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    box-shadow 0.18s,
+    background 0.18s;
+}
+.light {
+  background: var(--sq-light);
+}
+.dark {
+  background: var(--sq-dark);
+}
+
+.queen {
+  font-size: min(6.2vw, 54px);
+  line-height: 1;
+  color: var(--brass);
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.45),
+    0 0 22px rgba(214, 162, 68, 0.45);
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+.light .queen {
+  color: #8a6212;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.occupied .queen {
+  transform: scale(1);
+  opacity: 1;
+  animation: pop 0.34s cubic-bezier(0.34, 1.6, 0.5, 1);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0) rotate(-22deg);
+  }
+  60% {
+    transform: scale(1.22) rotate(4deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+.activeRow {
+  box-shadow: inset 0 0 0 1px rgba(127, 160, 124, 0.5);
+}
+
+.cursor::after {
+  content: '';
+  position: absolute;
+  inset: 9%;
+  border: 1.5px dashed var(--sage);
+  border-radius: 2px;
+  animation: spin 3.4s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bad {
+  background: var(--oxide);
+  animation: shake 0.3s;
+}
+.bad::after {
+  content: '✕';
+  position: absolute;
+  font-size: min(3.4vw, 24px);
+  color: rgba(255, 235, 220, 0.9);
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+.attacker {
+  box-shadow: inset 0 0 0 2px var(--oxide);
+}
+
+.rays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  /* Squares are positioned too, so the rays need to be lifted above them. */
+  z-index: 5;
+}
+.rays line {
+  stroke: var(--oxide);
+  stroke-width: 0.045;
+  stroke-linecap: round;
+  stroke-dasharray: 0.22 0.16;
+  animation: dash 1.2s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(196, 85, 58, 0.7));
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: -0.76;
+  }
+}
+
+.win {
+  animation: win 0.7s ease-out;
+}
+.win .queen {
+  animation: glow 0.7s ease-out;
+}
+@keyframes win {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(214, 162, 68, 0.55),
+      0 26px 60px -24px #000;
+  }
+  100% {
+    box-shadow:
+      0 0 0 26px rgba(214, 162, 68, 0),
+      0 26px 60px -24px #000;
+  }
+}
+@keyframes glow {
+  0%,
+  100% {
+    filter: none;
+  }
+  45% {
+    filter: drop-shadow(0 0 16px var(--brass-hi)) brightness(1.5);
+  }
+}
+
+.hint {
+  font-size: 10px;
+  color: var(--bone-faint);
+  margin-top: -6px;
+  padding-left: 26px;
+}
+
+/* ── params ───────────────────────────────────────────── */
+.setup {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.mode {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.mode span {
+  font-size: 11px;
+  color: var(--bone-dim);
+}
+
+/* ── inspector ────────────────────────────────────────── */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.frameLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-left: 2px solid var(--rule-2);
+  color: var(--bone-faint);
+}
+.frameLine.act {
+  border-left-color: var(--brass);
+  color: var(--bone);
+  background: rgba(214, 162, 68, 0.07);
+}
+.frameCol {
+  margin-left: auto;
+  color: var(--brass);
+}
+.frameLine:not(.act) .frameCol {
+  color: var(--bone-faint);
+}
+
+.setRow {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  font-size: 11px;
+}
+.setName {
+  width: 52px;
+  flex: none;
+  color: var(--bone-faint);
+}
+.setChips {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+/* ── solution thumbnails ──────────────────────────────── */
+.thumb {
+  display: grid;
+  width: 52px;
+  height: 52px;
+}
+.thumb i {
+  background: #20252c;
+}
+.thumb i.tLight {
+  background: #4a5057;
+}
+.thumb i.tQueen {
+  background: var(--brass);
+}

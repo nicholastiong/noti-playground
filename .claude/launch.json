@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8741"],
+      "port": 8741
+    },
+    {
+      "name": "algo-viz",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "algo-viz", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}

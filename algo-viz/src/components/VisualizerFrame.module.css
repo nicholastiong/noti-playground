@@ -1,0 +1,148 @@
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  min-height: calc(100vh - var(--header-h));
+}
+
+.left {
+  padding: 20px clamp(16px, 3vw, 44px) 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.right {
+  border-left: 1px solid var(--rule);
+  background: linear-gradient(180deg, var(--ink-2), #0c0e12);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* ── heading ──────────────────────────────────────────── */
+.intro {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.kicker {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+  margin-bottom: 9px;
+}
+
+.title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 46px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.blurb {
+  font-size: 11.5px;
+  color: var(--bone-faint);
+  line-height: 1.65;
+  max-width: 46ch;
+  flex: 1 1 260px;
+}
+
+/* ── stage + readouts ─────────────────────────────────── */
+.workbench {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.stageCol {
+  flex: 1 1 400px;
+  min-width: 276px;
+  max-width: min(520px, calc(100vh - 460px));
+}
+
+.sideCol {
+  flex: 1 1 210px;
+  min-width: 216px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── code pane ────────────────────────────────────────── */
+.codeHead {
+  padding: 15px clamp(16px, 2vw, 26px) 11px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fnName {
+  font-family: var(--serif);
+  font-size: 20px;
+}
+
+.codeTag {
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+  margin-left: auto;
+}
+
+.warn {
+  margin: 12px clamp(16px, 2vw, 26px) 0;
+  border: 1px solid rgba(196, 85, 58, 0.4);
+  background: rgba(196, 85, 58, 0.08);
+  color: #e6a48f;
+  font-size: 10.5px;
+  padding: 7px 10px;
+  border-radius: 2px;
+}
+
+.inspector {
+  border-top: 1px solid var(--rule);
+  padding: 14px clamp(16px, 2vw, 26px) 20px;
+  background: rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  max-height: 42vh;
+  overflow-y: auto;
+}
+
+/* ── responsive ───────────────────────────────────────── */
+@media (min-width: 1041px) {
+  .shell {
+    height: calc(100vh - var(--header-h));
+  }
+  .left {
+    overflow-y: auto;
+  }
+  .right {
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 1040px) {
+  .shell {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .right {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .stageCol {
+    max-width: 520px;
+  }
+}

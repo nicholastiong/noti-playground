@@ -1,0 +1,71 @@
+.scroller {
+  flex: 1;
+  overflow: auto;
+  padding: 14px 0 22px;
+  line-height: 1.72;
+  min-height: 0;
+  font-size: clamp(10.5px, 0.88vw, 12.5px);
+}
+
+.line {
+  display: flex;
+  padding: 0 clamp(16px, 2vw, 26px);
+  white-space: pre;
+  position: relative;
+  transition: background 0.12s;
+}
+
+.gutter {
+  width: 26px;
+  flex: none;
+  text-align: right;
+  margin-right: 16px;
+  color: rgba(233, 226, 210, 0.22);
+  font-size: 10.5px;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.active {
+  background: linear-gradient(90deg, rgba(214, 162, 68, 0.16), rgba(214, 162, 68, 0.02));
+}
+.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--brass);
+}
+.active .gutter {
+  color: var(--brass);
+}
+.active .text {
+  color: var(--bone);
+}
+
+/* Token kinds — must match TokenKind in lib/highlight.ts */
+.text,
+.plain {
+  color: rgba(233, 226, 210, 0.72);
+}
+.keyword {
+  color: var(--brass);
+}
+.call {
+  color: var(--steel);
+}
+.binding {
+  color: var(--sage);
+}
+.number {
+  color: #d98b6e;
+}
+.punct {
+  color: rgba(233, 226, 210, 0.45);
+}
+.comment {
+  color: rgba(233, 226, 210, 0.28);
+  font-style: italic;
+}

@@ -1,0 +1,307 @@
+/* ══════════════════════════════════════════════════════
+   Tokens
+   ══════════════════════════════════════════════════════ */
+:root {
+  --ink: #0a0b0d;
+  --ink-2: #101318;
+  --ink-3: #161a21;
+  --rule: rgba(233, 226, 210, 0.11);
+  --rule-2: rgba(233, 226, 210, 0.055);
+  --bone: #e9e2d2;
+  --bone-dim: rgba(233, 226, 210, 0.52);
+  --bone-faint: rgba(233, 226, 210, 0.3);
+  --brass: #d6a244;
+  --brass-hi: #f0c877;
+  --oxide: #c4553a;
+  --sage: #7fa07c;
+  --steel: #9bb8d6;
+
+  --sq-light: #cfc7b3;
+  --sq-dark: #2a3038;
+
+  --serif: var(--font-serif), Georgia, serif;
+  --mono: var(--font-mono), ui-monospace, monospace;
+
+  --header-h: 61px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--mono);
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Atmosphere: warm light bled in from the corners, plus film grain. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(120vw 80vh at 12% -10%, rgba(214, 162, 68, 0.1), transparent 60%),
+    radial-gradient(90vw 70vh at 105% 110%, rgba(127, 160, 124, 0.07), transparent 60%);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(214, 162, 68, 0.28);
+}
+
+:focus-visible {
+  outline: 1px solid var(--brass);
+  outline-offset: 2px;
+}
+
+/* ══════════════════════════════════════════════════════
+   Shared primitives — the design system every stage draws on
+   ══════════════════════════════════════════════════════ */
+
+/* Small-caps section label with a rule trailing off to the right. */
+.lab {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.lab::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--rule);
+}
+
+.btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 300;
+  background: transparent;
+  color: var(--bone-dim);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: 0.16s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) {
+  border-color: var(--bone-faint);
+  color: var(--bone);
+  background: rgba(233, 226, 210, 0.04);
+}
+.btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.btn.pri {
+  background: var(--brass);
+  border-color: var(--brass);
+  color: #100d06;
+  font-weight: 500;
+  padding: 8px 18px;
+}
+.btn.pri:hover:not(:disabled) {
+  background: var(--brass-hi);
+  border-color: var(--brass-hi);
+  color: #100d06;
+}
+
+.kbd {
+  font-size: 9px;
+  opacity: 0.5;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 0 3px;
+  line-height: 1.4;
+}
+
+/* Segmented control */
+.seg {
+  display: flex;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.seg button {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 300;
+  background: transparent;
+  color: var(--bone-dim);
+  border: 0;
+  border-right: 1px solid var(--rule-2);
+  padding: 6px 11px;
+  cursor: pointer;
+  transition: 0.18s;
+}
+.seg button:last-child {
+  border-right: 0;
+}
+.seg button:hover {
+  background: rgba(233, 226, 210, 0.05);
+  color: var(--bone);
+}
+.seg button[aria-pressed='true'] {
+  background: var(--brass);
+  color: #100d06;
+  font-weight: 500;
+}
+
+/* Toggle */
+.switch {
+  position: relative;
+  width: 38px;
+  height: 19px;
+  border: 1px solid var(--rule);
+  border-radius: 11px;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  flex: none;
+  transition: 0.22s;
+  padding: 0;
+}
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--bone-faint);
+  transition: 0.22s cubic-bezier(0.4, 1.4, 0.5, 1);
+}
+.switch[aria-checked='true'] {
+  border-color: var(--brass);
+  background: rgba(214, 162, 68, 0.16);
+}
+.switch[aria-checked='true']::after {
+  left: 20px;
+  background: var(--brass);
+}
+
+.chip {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  color: var(--bone-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.chip.on {
+  border-color: var(--brass);
+  color: var(--brass);
+  background: rgba(214, 162, 68, 0.1);
+}
+.chip.ghost {
+  opacity: 0.32;
+}
+
+/* Range inputs */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  flex: 1;
+  height: 18px;
+  cursor: pointer;
+  min-width: 60px;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--rule);
+  border-radius: 2px;
+}
+input[type='range']::-moz-range-track {
+  height: 2px;
+  background: var(--rule);
+  border-radius: 2px;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--brass);
+  margin-top: -4.5px;
+  box-shadow: 0 0 0 3px rgba(214, 162, 68, 0.18);
+  transition: box-shadow 0.15s;
+}
+input[type='range']:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 6px rgba(214, 162, 68, 0.22);
+}
+input[type='range']::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--brass);
+}
+
+/* Scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

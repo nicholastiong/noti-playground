@@ -1,0 +1,131 @@
+/* ── status ───────────────────────────────────────────── */
+.status {
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--brass);
+  background: rgba(233, 226, 210, 0.025);
+  padding: 11px 14px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+.status b {
+  font-weight: 500;
+  color: var(--bone);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brass);
+  flex: none;
+}
+
+.plain {
+  border-left-color: var(--brass);
+}
+.red {
+  border-left-color: var(--oxide);
+}
+.red .dot {
+  background: var(--oxide);
+}
+.green {
+  border-left-color: var(--sage);
+}
+.green .dot {
+  background: var(--sage);
+}
+.gold {
+  border-left-color: var(--brass);
+}
+
+/* ── stats ────────────────────────────────────────────── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  border: 1px solid var(--rule);
+}
+
+.stat {
+  padding: 10px 12px;
+  border-right: 1px solid var(--rule-2);
+}
+.stat:last-child {
+  border-right: 0;
+}
+
+.key {
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+}
+
+.value {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat.gold .value {
+  color: var(--brass);
+}
+.stat.red .value {
+  color: var(--oxide);
+}
+.stat.green .value {
+  color: var(--sage);
+}
+
+/* ── marks strip ──────────────────────────────────────── */
+.strip {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding: 3px 2px 10px;
+}
+
+.mark {
+  flex: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: 0.16s;
+  opacity: 0.28;
+  filter: grayscale(1);
+  color: inherit;
+  font-family: var(--mono);
+}
+.mark.reached {
+  opacity: 1;
+  filter: none;
+}
+.mark:hover {
+  border-color: var(--brass);
+  transform: translateY(-2px);
+}
+.mark.current {
+  border-color: var(--brass);
+  box-shadow: 0 0 0 1px var(--brass);
+}
+
+.caption {
+  display: block;
+  font-size: 8.5px;
+  color: var(--bone-faint);
+  margin-top: 3px;
+  letter-spacing: 0.1em;
+}
+
+.empty {
+  font-size: 11px;
+  color: var(--bone-faint);
+  padding: 6px 0;
+  align-self: center;
+}

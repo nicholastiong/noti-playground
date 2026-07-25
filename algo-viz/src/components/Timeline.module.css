@@ -1,0 +1,34 @@
+.deck {
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.scrub {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+  margin-left: auto;
+}
+
+.num {
+  font-size: 10.5px;
+  color: var(--bone-faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
