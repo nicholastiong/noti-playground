@@ -1,0 +1,226 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(233, 226, 210, 0.14);
+  background:
+    radial-gradient(70% 60% at 50% 40%, rgba(214, 162, 68, 0.05), transparent 70%),
+    var(--ink-3);
+  box-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+/* ── edges ────────────────────────────────────────────── */
+.edge {
+  stroke: rgba(233, 226, 210, 0.16);
+  stroke-width: 0.45;
+  transition:
+    stroke 0.2s,
+    stroke-width 0.2s;
+}
+
+.arrow {
+  fill: rgba(233, 226, 210, 0.3);
+}
+
+.tree {
+  stroke: rgba(214, 162, 68, 0.55);
+  stroke-width: 0.8;
+}
+
+.scanning {
+  stroke: var(--oxide);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-dasharray: 2 1.4;
+  animation: dash 0.9s linear infinite;
+  filter: drop-shadow(0 0 1.6px rgba(196, 85, 58, 0.8));
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: -6.8;
+  }
+}
+
+.cycle {
+  stroke: var(--oxide);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 2.4px rgba(196, 85, 58, 0.85));
+}
+
+.cycleArrow {
+  fill: var(--oxide);
+}
+
+.weight circle {
+  fill: var(--ink);
+  stroke: rgba(233, 226, 210, 0.1);
+  stroke-width: 0.2;
+}
+.weight text {
+  font-family: var(--mono);
+  font-size: 2.7px;
+  fill: var(--bone-faint);
+}
+.negative circle {
+  stroke: rgba(196, 85, 58, 0.6);
+}
+.negative text {
+  fill: var(--oxide);
+}
+
+/* ── nodes ────────────────────────────────────────────── */
+.node {
+  cursor: pointer;
+}
+
+.disc {
+  fill: var(--ink-2);
+  stroke: rgba(233, 226, 210, 0.28);
+  stroke-width: 0.4;
+  transition:
+    fill 0.2s,
+    stroke 0.2s;
+}
+
+.ring {
+  fill: none;
+  stroke: rgba(233, 226, 210, 0.22);
+  stroke-width: 0.3;
+  stroke-dasharray: 1.4 1.2;
+}
+
+.name {
+  font-family: var(--serif);
+  font-size: 4.4px;
+  fill: var(--bone-dim);
+  pointer-events: none;
+}
+
+.dist {
+  font-family: var(--mono);
+  font-size: 3px;
+  fill: var(--bone-faint);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.reached .disc {
+  fill: rgba(214, 162, 68, 0.14);
+  stroke: rgba(214, 162, 68, 0.7);
+}
+.reached .dist {
+  fill: var(--brass);
+}
+.reached .name {
+  fill: var(--bone);
+}
+
+.from .disc {
+  stroke: var(--brass-hi);
+  stroke-width: 0.9;
+  filter: drop-shadow(0 0 2.4px rgba(240, 200, 119, 0.7));
+}
+
+.to .disc {
+  stroke: var(--oxide);
+  stroke-width: 0.7;
+}
+
+.onCycle .disc {
+  fill: rgba(196, 85, 58, 0.22);
+  stroke: var(--oxide);
+  stroke-width: 0.9;
+}
+
+/* ── legend ───────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 12px;
+  font-size: 10px;
+  color: var(--bone-faint);
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.swSource {
+  border: 1px dashed var(--bone-faint);
+}
+.swTree {
+  background: rgba(214, 162, 68, 0.25);
+  border: 1px solid var(--brass);
+}
+.swScan {
+  background: var(--oxide);
+}
+.swNegative {
+  background: transparent;
+  border: 1px solid var(--oxide);
+}
+
+.hint {
+  font-size: 10px;
+  color: var(--bone-faint);
+  margin-top: 8px;
+}
+
+/* ── params ───────────────────────────────────────────── */
+.setup {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ── inspector ────────────────────────────────────────── */
+.table {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+  gap: 4px;
+}
+
+.cell {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 4px 6px;
+  font-size: 10.5px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--bone-faint);
+}
+.cell b {
+  font-weight: 400;
+  color: var(--bone-dim);
+}
+.cell .val {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--bone-dim);
+}
+.cell.isReached {
+  border-color: rgba(214, 162, 68, 0.5);
+  background: rgba(214, 162, 68, 0.08);
+}
+.cell.isReached .val,
+.cell.isReached b {
+  color: var(--brass);
+}

@@ -161,7 +161,7 @@ export default function VisualizerFrame({ def }: { def: AnyAlgorithmDef }) {
 
 /** Event types ending in these suffixes get a consistent colour across algorithms. */
 function toneFor(type: string): Tone {
-  if (/reject|skip|undo|stale|dead/.test(type)) return 'red';
-  if (/solution|goal|done|found|path/.test(type)) return 'green';
+  if (/reject|skip|undo|stale|dead|cycle/.test(type)) return 'red';
+  if (/solution|goal|done|found|path|accept|converge|span/.test(type)) return 'green';
   return 'plain';
 }

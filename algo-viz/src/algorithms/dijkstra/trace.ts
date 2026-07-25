@@ -1,5 +1,5 @@
 import { TraceRecorder, type Trace } from '@/lib/trace';
-import { buildGraph, nodeName, type Graph, type GraphSize } from './graph';
+import { buildGraph, nodeName, type Graph, type GraphSize } from '@/lib/graph';
 
 export interface DijkstraParams {
   size: GraphSize;

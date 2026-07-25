@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import type { StageProps } from '@/lib/algorithm';
-import { buildGraph } from './graph';
+import { buildGraph } from '@/lib/graph';
 import type { DijkstraParams, DijkstraPayload } from './trace';
 import styles from './GraphStage.module.css';
 

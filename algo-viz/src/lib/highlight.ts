@@ -17,7 +17,7 @@ export interface Token {
 
 const KEYWORDS: Record<Lang, string> = {
   js: '\\b(?:function|class|this|const|let|if|else|return|for|of|while|continue|break|new|null|undefined|Infinity|true|false)\\b',
-  py: '\\b(?:def|import|if|elif|else|return|for|in|is|not|and|or|while|continue|break|None|True|False)\\b',
+  py: '\\b(?:def|class|self|import|if|elif|else|return|for|in|is|not|and|or|while|continue|break|lambda|None|True|False)\\b',
 };
 
 const COMMENT: Record<Lang, string> = { js: '//', py: '#' };
@@ -27,7 +27,7 @@ const buildToken = (keywords: string) =>
     [
       `(${keywords})`,
       // Types and the names we bind at the top of each algorithm.
-      '(\\b(?:Set|Map|MinQueue|Infinity|heapq|solutions|queens|cols|diagA|diagB|diag_a|diag_b|dist|prev|done|queue|heap|graph|source|target)\\b)',
+      '(\\b(?:Set|Map|MinQueue|UnionFind|Infinity|heapq|solutions|queens|cols|diagA|diagB|diag_a|diag_b|dist|prev|done|queue|heap|graph|source|target|parent|size|mst|edges|changed|uf)\\b)',
       // Anything invoked.
       '(\\b[A-Za-z_$][\\w$]*\\b(?=\\())',
       '(\\b\\d+\\b)',

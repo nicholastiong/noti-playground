@@ -4,7 +4,7 @@ import { defineAlgorithm } from '@/lib/algorithm';
 import type { TraceEvent } from '@/lib/trace';
 import GraphStage from './GraphStage';
 import styles from './GraphStage.module.css';
-import { buildGraph, nodeName, SIZES, type GraphSize } from './graph';
+import { buildGraph, nodeName, SIZES, type GraphSize } from '@/lib/graph';
 import {
   buildDijkstraTrace,
   CODE,
