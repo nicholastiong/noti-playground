@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N-Queens · a backtracking study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0B0D;
+  --ink-2:#101318;
+  --ink-3:#161A21;
+  --rule:rgba(233,226,210,.11);
+  --rule-2:rgba(233,226,210,.055);
+  --bone:#E9E2D2;
+  --bone-dim:rgba(233,226,210,.52);
+  --bone-faint:rgba(233,226,210,.30);
+  --brass:#D6A244;
+  --brass-hi:#F0C877;
+  --oxide:#C4553A;
+  --sage:#7FA07C;
+  --sq-light:#CFC7B3;
+  --sq-dark:#2A3038;
+  --serif:'Instrument Serif',Georgia,serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--bone);
+  font-family:var(--mono);
+  font-weight:300;
+  font-size:13px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(120vw 80vh at 12% -10%, rgba(214,162,68,.10), transparent 60%),
+    radial-gradient(90vw 70vh at 105% 110%, rgba(127,160,124,.07), transparent 60%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── header ─────────────────────────────────────────── */
+header{
+  position:relative;z-index:1;
+  padding:26px clamp(18px,3vw,44px) 18px;
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;
+}
+.wordmark{display:flex;align-items:baseline;gap:14px}
+h1{
+  font-family:var(--serif);font-weight:400;font-size:clamp(38px,5.2vw,64px);
+  line-height:.85;letter-spacing:-.02em;
+}
+h1 em{font-style:italic;color:var(--brass)}
+.tag{
+  font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--bone-faint);padding-bottom:6px;
+}
+.byline{
+  margin-left:auto;text-align:right;font-size:11px;color:var(--bone-faint);
+  max-width:34ch;line-height:1.65;padding-bottom:4px;
+}
+.byline b{color:var(--bone-dim);font-weight:400}
+
+/* ─── shell ──────────────────────────────────────────── */
+.shell{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  min-height:calc(100vh - 118px);
+}
+.left{padding:22px clamp(18px,3vw,44px) 40px;display:flex;flex-direction:column;gap:18px}
+.right{
+  border-left:1px solid var(--rule);
+  background:linear-gradient(180deg,var(--ink-2),#0C0E12);
+  display:flex;flex-direction:column;min-height:0;
+}
+
+/* ─── micro label ────────────────────────────────────── */
+.lab{
+  font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--bone-faint);
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+}
+.lab::after{content:'';height:1px;flex:1;background:var(--rule)}
+
+/* ─── setup row ──────────────────────────────────────── */
+.setup{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.seg button{
+  font-family:var(--mono);font-size:12px;font-weight:400;
+  background:transparent;color:var(--bone-dim);border:0;
+  padding:6px 11px;cursor:pointer;transition:.18s;
+  border-right:1px solid var(--rule-2);
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:rgba(233,226,210,.05);color:var(--bone)}
+.seg button[aria-pressed="true"]{background:var(--brass);color:#100D06;font-weight:500}
+.modewrap{display:flex;align-items:center;gap:9px}
+.switch{
+  --on:0;position:relative;width:38px;height:19px;border:1px solid var(--rule);
+  border-radius:11px;background:rgba(0,0,0,.3);cursor:pointer;flex:none;transition:.22s;
+}
+.switch::after{
+  content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;
+  background:var(--bone-faint);transition:.22s cubic-bezier(.4,1.4,.5,1);
+}
+.switch[aria-checked="true"]{border-color:var(--brass);background:rgba(214,162,68,.16)}
+.switch[aria-checked="true"]::after{left:20px;background:var(--brass)}
+.modewrap span{font-size:11px;color:var(--bone-dim)}
+
+/* ─── board ──────────────────────────────────────────── */
+.boardwrap{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.boardcol{flex:1 1 400px;min-width:276px;max-width:min(520px, calc(100vh - 400px))}
+.sidecol{flex:1 1 210px;min-width:216px;display:flex;flex-direction:column;gap:14px}
+.deck{border-top:1px solid var(--rule);padding-top:16px;margin-top:auto}
+.frame{position:relative;padding:22px 22px 22px 26px}
+.ranks,.files{position:absolute;display:grid;color:var(--bone-faint);font-size:9.5px;letter-spacing:.14em}
+.ranks{left:2px;top:22px;bottom:22px;grid-auto-rows:1fr;align-items:center;justify-items:center;width:20px}
+.files{left:26px;right:22px;bottom:2px;grid-auto-flow:column;justify-items:center;height:16px;align-items:center}
+.board{
+  position:relative;display:grid;aspect-ratio:1/1;width:100%;
+  border:1px solid rgba(233,226,210,.22);
+  box-shadow:0 26px 60px -24px rgba(0,0,0,.9), inset 0 0 0 6px rgba(10,11,13,.5);
+  background:var(--ink-3);
+}
+.sq{
+  position:relative;display:grid;place-items:center;overflow:hidden;
+  transition:box-shadow .18s, background .18s;
+}
+.sq.lt{background:var(--sq-light)}
+.sq.dk{background:var(--sq-dark)}
+.sq .q{
+  font-size:min(6.2vw,60px);line-height:1;color:var(--brass);
+  text-shadow:0 2px 0 rgba(0,0,0,.45), 0 0 22px rgba(214,162,68,.45);
+  transform:scale(0);opacity:0;
+}
+.sq.has .q{transform:scale(1);opacity:1;transition:transform .16s cubic-bezier(.34,1.7,.5,1),opacity .12s}
+.sq.pop .q{animation:pop .34s cubic-bezier(.34,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(0) rotate(-22deg)}60%{transform:scale(1.22) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+.sq.lt .q{color:#8A6212;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.sq.cursor::after{
+  content:'';position:absolute;inset:9%;border:1.5px dashed var(--sage);border-radius:2px;
+  animation:spin 3.4s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sq.bad{background:var(--oxide)!important;animation:shake .3s}
+.sq.bad::after{content:'✕';position:absolute;font-size:min(3.4vw,26px);color:rgba(255,235,220,.9)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.sq.attacker{box-shadow:inset 0 0 0 2px var(--oxide)}
+.sq.lastrow{box-shadow:inset 0 0 0 1px rgba(127,160,124,.5)}
+.board.win{animation:win .7s ease-out}
+.board.win .q{animation:glow .7s ease-out}
+@keyframes win{0%{box-shadow:0 0 0 0 rgba(214,162,68,.55),0 26px 60px -24px #000}
+  100%{box-shadow:0 0 0 26px rgba(214,162,68,0),0 26px 60px -24px #000}}
+@keyframes glow{0%,100%{filter:none}45%{filter:drop-shadow(0 0 16px var(--brass-hi)) brightness(1.5)}}
+#rays{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:5}
+#rays line{stroke:var(--oxide);stroke-width:.045;stroke-linecap:round;
+  stroke-dasharray:.22 .16;animation:dash 1.2s linear infinite;filter:drop-shadow(0 0 6px rgba(196,85,58,.7))}
+@keyframes dash{to{stroke-dashoffset:-.76}}
+
+/* ─── controls ───────────────────────────────────────── */
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:12px;background:transparent;color:var(--bone-dim);
+  border:1px solid var(--rule);border-radius:2px;padding:8px 12px;cursor:pointer;
+  transition:.16s;display:inline-flex;align-items:center;gap:7px;
+}
+.btn:hover:not(:disabled){border-color:var(--bone-faint);color:var(--bone);background:rgba(233,226,210,.04)}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn.pri{background:var(--brass);border-color:var(--brass);color:#100D06;font-weight:500;padding:8px 20px}
+.btn.pri:hover:not(:disabled){background:var(--brass-hi);border-color:var(--brass-hi);color:#100D06}
+.kbd{font-size:9px;opacity:.5;border:1px solid currentColor;border-radius:2px;padding:0 3px;line-height:1.4}
+
+.scrub{display:flex;align-items:center;gap:12px;margin-top:12px}
+.controls .scrub{margin-top:0;margin-left:auto}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;background:transparent;flex:1;height:18px;cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule);border-radius:2px}
+input[type=range]::-moz-range-track{height:2px;background:var(--rule);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--brass);
+  margin-top:-4.5px;box-shadow:0 0 0 3px rgba(214,162,68,.18);transition:box-shadow .15s;
+}
+input[type=range]:hover::-webkit-slider-thumb{box-shadow:0 0 0 6px rgba(214,162,68,.22)}
+input[type=range]::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--brass)}
+.scrub .n{font-size:10.5px;color:var(--bone-faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+.speed{display:flex;align-items:center;gap:10px;min-width:190px}
+.speed input[type=range]{flex:1}
+
+/* ─── status ─────────────────────────────────────────── */
+.status{
+  border:1px solid var(--rule);border-left:2px solid var(--brass);
+  background:rgba(233,226,210,.025);padding:11px 14px;font-size:12px;
+  display:flex;align-items:center;gap:12px;min-height:44px;
+}
+.status .dot{width:6px;height:6px;border-radius:50%;background:var(--brass);flex:none}
+.status.rej{border-left-color:var(--oxide)}.status.rej .dot{background:var(--oxide)}
+.status.sol{border-left-color:var(--sage)}.status.sol .dot{background:var(--sage)}
+.status b{font-weight:500;color:var(--bone)}
+
+/* ─── stats ──────────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));border:1px solid var(--rule)}
+.stat{padding:10px 12px;border-right:1px solid var(--rule-2)}
+.stat:last-child{border-right:0}
+.stat .k{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-faint)}
+.stat .v{font-family:var(--serif);font-size:26px;line-height:1.15;font-variant-numeric:tabular-nums}
+.stat.gold .v{color:var(--brass)}
+.stat.red .v{color:var(--oxide)}
+
+/* ─── solutions strip ────────────────────────────────── */
+.solscroll{display:flex;gap:9px;overflow-x:auto;padding:3px 2px 10px;scrollbar-width:thin}
+.solscroll::-webkit-scrollbar{height:5px}
+.solscroll::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}
+.mini{
+  flex:none;background:transparent;border:1px solid var(--rule);padding:4px;cursor:pointer;
+  border-radius:2px;transition:.16s;opacity:.28;filter:grayscale(1);
+}
+.mini.found{opacity:1;filter:none}
+.mini:hover{border-color:var(--brass);transform:translateY(-2px)}
+.mini.cur{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass)}
+.mgrid{display:grid;width:52px;height:52px;gap:0}
+.mgrid i{background:#20252C}
+.mgrid i.l{background:#4A5057}
+.mgrid i.q{background:var(--brass)}
+.mini .cap{display:block;font-size:8.5px;color:var(--bone-faint);margin-top:3px;letter-spacing:.1em}
+.emptynote{font-size:11px;color:var(--bone-faint);padding:6px 0}
+
+/* ─── code panel ─────────────────────────────────────── */
+.codehead{
+  padding:16px clamp(16px,2vw,26px) 12px;border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:14px;
+}
+.codehead .ttl{font-family:var(--serif);font-size:20px}
+.codehead .sub{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--bone-faint);margin-left:auto}
+.code{
+  flex:1;overflow:auto;padding:14px 0 22px;line-height:1.72;min-height:0;
+  font-size:clamp(10.5px,.88vw,12.5px);scrollbar-width:thin;
+}
+.code::-webkit-scrollbar{width:6px;height:6px}
+.code::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}
+.ln{display:flex;padding:0 clamp(16px,2vw,26px);white-space:pre;position:relative;transition:background .12s}
+.ln .no{
+  width:26px;flex:none;text-align:right;margin-right:16px;color:rgba(233,226,210,.22);
+  font-size:10.5px;user-select:none;font-variant-numeric:tabular-nums;
+}
+.ln.on{background:linear-gradient(90deg,rgba(214,162,68,.16),rgba(214,162,68,.02))}
+.ln.on::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--brass)}
+.ln.on .no{color:var(--brass)}
+.ln.on .t{color:var(--bone)}
+.t{color:rgba(233,226,210,.72)}
+.k{color:var(--brass)}
+.f{color:#9BB8D6}
+.b{color:var(--sage)}
+.num{color:#D98B6E}
+.c{color:rgba(233,226,210,.28);font-style:italic}
+.p{color:rgba(233,226,210,.45)}
+
+/* ─── inspector ──────────────────────────────────────── */
+.inspect{border-top:1px solid var(--rule);padding:14px clamp(16px,2vw,26px) 20px;display:flex;flex-direction:column;gap:13px;background:rgba(0,0,0,.22)}
+.rowline{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.chip{
+  font-size:10.5px;padding:2px 7px;border:1px solid var(--rule);border-radius:2px;
+  color:var(--bone-dim);font-variant-numeric:tabular-nums;
+}
+.chip.on{border-color:var(--brass);color:var(--brass);background:rgba(214,162,68,.10)}
+.chip.gh{opacity:.32}
+.stack{display:flex;flex-direction:column;gap:3px}
+.frameline{
+  display:flex;align-items:center;gap:10px;font-size:11px;padding:3px 8px;
+  border-left:2px solid var(--rule-2);color:var(--bone-faint);
+}
+.frameline.act{border-left-color:var(--brass);color:var(--bone);background:rgba(214,162,68,.07)}
+.frameline .col{margin-left:auto;color:var(--brass)}
+.setrow{display:flex;gap:9px;align-items:flex-start;font-size:11px}
+.setrow .nm{width:52px;flex:none;color:var(--bone-faint)}
+
+.warn{
+  margin:0 clamp(16px,2vw,26px) 12px;border:1px solid rgba(196,85,58,.4);
+  background:rgba(196,85,58,.08);color:#E6A48F;font-size:10.5px;padding:7px 10px;border-radius:2px;
+}
+.hidden{display:none!important}
+
+@media(min-width:1041px){
+  .shell{height:calc(100vh - 118px)}
+  .left{overflow-y:auto;scrollbar-width:thin}
+  .left::-webkit-scrollbar{width:6px}
+  .left::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}
+  .right{overflow:hidden}
+}
+@media(max-width:1040px){
+  .shell{grid-template-columns:1fr}
+  .right{border-left:0;border-top:1px solid var(--rule)}
+  .code{max-height:60vh}
+  .byline{margin-left:0;text-align:left}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">
+    <h1><em>N</em>-Queens</h1>
+    <span class="tag">Backtracking&nbsp;/&nbsp;Study&nbsp;№1</span>
+  </div>
+  <p class="byline">Place <b>n</b> queens on an <b>n×n</b> board so that no two share a row, column, or diagonal. Step the search, watch it fail, watch it undo.</p>
+</header>
+
+<div class="shell">
+  <!-- ══════════ LEFT: VISUALIZER ══════════ -->
+  <section class="left">
+    <div class="lab">Board</div>
+    <div class="setup">
+      <div class="seg" id="nseg"></div>
+      <div class="modewrap">
+        <div class="switch" id="modeSw" role="switch" aria-checked="false" tabindex="0"></div>
+        <span id="modeTxt">stop at first solution</span>
+      </div>
+    </div>
+
+    <div class="boardwrap">
+      <div class="boardcol">
+        <div class="frame">
+          <div class="ranks" id="ranks"></div>
+          <div class="files" id="files"></div>
+          <div class="board" id="board">
+            <svg id="rays" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidecol">
+        <div class="status" id="status"><span class="dot"></span><span id="statusTxt">Ready — press play.</span></div>
+        <div class="stats">
+          <div class="stat"><div class="k">Step</div><div class="v" id="sSteps">0</div></div>
+          <div class="stat gold"><div class="k">Placed</div><div class="v" id="sPlaced">0</div></div>
+          <div class="stat red"><div class="k">Backtracks</div><div class="v" id="sBack">0</div></div>
+          <div class="stat"><div class="k">Rejected</div><div class="v" id="sRej">0</div></div>
+          <div class="stat gold"><div class="k">Solutions</div><div class="v" id="sSol">0</div></div>
+        </div>
+        <div class="lab">Solutions found</div>
+        <div class="solscroll" id="sols"><div class="emptynote">none yet — the strip fills as the search succeeds.</div></div>
+      </div>
+    </div>
+
+    <div class="deck">
+      <div class="controls">
+        <button class="btn" id="reset" title="Reset (R)">⏮ reset</button>
+        <button class="btn" id="back" title="Step back (←)">◀ step</button>
+        <button class="btn pri" id="play" title="Play / pause (space)">▶ play <span class="kbd">space</span></button>
+        <button class="btn" id="fwd" title="Step forward (→)">step ▶</button>
+        <button class="btn" id="end" title="Jump to end">end ⏭</button>
+        <div class="scrub speed">
+          <span class="n">speed</span>
+          <input type="range" id="speed" min="0" max="100" value="46">
+          <span class="n" id="speedTxt">8 /s</span>
+        </div>
+      </div>
+      <div class="scrub">
+        <span class="n" id="stepNo">0</span>
+        <input type="range" id="scrub" min="0" max="0" value="0">
+        <span class="n" id="stepTot">/ 0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ RIGHT: CODE ══════════ -->
+  <section class="right">
+    <div class="codehead">
+      <span class="ttl">solveNQueens</span>
+      <span class="sub">javascript · line-synced</span>
+    </div>
+    <div class="warn hidden" id="warn"></div>
+    <div class="code" id="code"></div>
+    <div class="inspect">
+      <div class="lab">Call stack</div>
+      <div class="stack" id="stack"></div>
+      <div class="lab">Occupancy sets</div>
+      <div class="setrow"><span class="nm">cols</span><span class="rowline" id="setCols"></span></div>
+      <div class="setrow"><span class="nm">diagA</span><span class="rowline" id="setA"></span></div>
+      <div class="setrow"><span class="nm">diagB</span><span class="rowline" id="setB"></span></div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   1. The algorithm, verbatim — this is what the panel shows
+   ══════════════════════════════════════════════════════ */
+const CODE = [
+"function solveNQueens(n) {",
+"  const solutions = [];",
+"  const queens    = [];          // queens[r] = column of queen in row r",
+"  const cols      = new Set();   // columns already occupied",
+"  const diagA     = new Set();   // ↘ diagonals, keyed by row - col",
+"  const diagB     = new Set();   // ↙ diagonals, keyed by row + col",
+"",
+"  function place(row) {",
+"    if (row === n) {                    // every row filled",
+"      solutions.push([...queens]);      // record a solution",
+"      return;",
+"    }",
+"",
+"    for (let col = 0; col < n; col++) {",
+"      if (cols.has(col) ||",
+"          diagA.has(row - col) ||",
+"          diagB.has(row + col)) continue;   // square is attacked",
+"",
+"      queens[row] = col;                // commit: place the queen",
+"      cols.add(col);",
+"      diagA.add(row - col);",
+"      diagB.add(row + col);",
+"",
+"      place(row + 1);                   // descend to the next row",
+"",
+"      queens.pop();                     // undo the choice",
+"      cols.delete(col);",
+"      diagA.delete(row - col);",
+"      diagB.delete(row + col);",
+"    }",
+"  }",
+"",
+"  place(0);",
+"  return solutions;",
+"}"
+];
+const L = { call:8, solution:10, try:14, reject:17, place:19, recurse:24, undo:26, exhaust:30, done:34 };
+
+/* ── syntax highlight ── */
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const TOK = /(\b(?:function|const|let|if|return|for|continue|new)\b)|(\b(?:Set|solutions|queens|cols|diagA|diagB)\b)|(\b(?:place|has|add|delete|push|pop)\b(?=\())|(\b\d+\b)|([{}()\[\];,.|=<>+\-*!&]+)/g;
+function hl(line){
+  const i = line.indexOf('//');
+  const code = i >= 0 ? line.slice(0,i) : line;
+  const com  = i >= 0 ? line.slice(i) : '';
+  let out = '', last = 0, m;
+  TOK.lastIndex = 0;
+  while ((m = TOK.exec(code)) !== null){
+    out += esc(code.slice(last, m.index));
+    const cls = m[1] ? 'k' : m[2] ? 'b' : m[3] ? 'f' : m[4] ? 'num' : 'p';
+    out += `<span class="${cls}">${esc(m[0])}</span>`;
+    last = TOK.lastIndex;
+  }
+  out += esc(code.slice(last));
+  return `<span class="t">${out}${com ? `<span class="c">${esc(com)}</span>` : ''}</span>`;
+}
+const codeEl = document.getElementById('code');
+codeEl.innerHTML = CODE.map((l,i)=>`<div class="ln" data-l="${i+1}"><span class="no">${i+1}</span>${hl(l)}</div>`).join('');
+const lnEls = [...codeEl.querySelectorAll('.ln')];
+
+/* ══════════════════════════════════════════════════════
+   2. Trace builder — runs the search, records every event
+   ══════════════════════════════════════════════════════ */
+const MAX_EVENTS = 220000;
+const STOP = Symbol('stop');
+
+function buildTrace(n, findAll){
+  const events = [], solutions = [];
+  const cols = new Set(), dA = new Set(), dB = new Set();
+  let snap = [];                       // immutable queens snapshot
+  let placed = 0, backs = 0, rejs = 0;
+  let truncated = false;
+
+  const push = (type, line, msg, extra) => {
+    if (events.length >= MAX_EVENTS){ truncated = true; throw STOP; }
+    events.push(Object.assign({type,line,msg,q:snap,placed,backs,rejs,sols:solutions.length}, extra));
+  };
+  const sq = (r,c) => `${String.fromCharCode(97+c)}${n-r}`;
+
+  function attackersOf(row,col){
+    const a = [];
+    for (let r=0;r<snap.length;r++){
+      const c = snap[r];
+      if (c===col || r-c===row-col || r+c===row+col) a.push(r);
+    }
+    return a;
+  }
+
+  function place(row){
+    push('call', L.call, `place(${row}) — search row ${row}`, {row});
+    if (row === n){
+      solutions.push(snap);
+      push('solution', L.solution, `solution #${solutions.length} found — all ${n} queens are safe`, {row});
+      if (!findAll) throw STOP;
+      return;
+    }
+    for (let col=0; col<n; col++){
+      push('try', L.try, `row ${row}: try column ${col} (${sq(row,col)})`, {row,col});
+      if (cols.has(col) || dA.has(row-col) || dB.has(row+col)){
+        const att = attackersOf(row,col);
+        rejs++;
+        push('reject', L.reject, `${sq(row,col)} is attacked by ${att.length} queen${att.length>1?'s':''} — skip`, {row,col,att});
+        continue;
+      }
+      snap = snap.concat(col); placed++;
+      cols.add(col); dA.add(row-col); dB.add(row+col);
+      push('place', L.place, `place queen at ${sq(row,col)}`, {row,col,fresh:true});
+      push('recurse', L.recurse, `descend to row ${row+1}`, {row,col});
+      place(row+1);
+      snap = snap.slice(0,-1); backs++;
+      cols.delete(col); dA.delete(row-col); dB.delete(row+col);
+      push('undo', L.undo, `dead end below — lift the queen off ${sq(row,col)}`, {row,col});
+    }
+    push('exhaust', L.exhaust, row===0
+      ? `row 0 exhausted — the whole search tree is explored`
+      : `row ${row} has no legal column left — return to row ${row-1}`, {row});
+  }
+
+  try { place(0); }
+  catch(e){ if (e !== STOP) throw e; }
+
+  snap = [];
+  try {
+    push('done', L.done, `search complete — ${solutions.length} solution${solutions.length===1?'':'s'} found`, {});
+  } catch(e){ if (e !== STOP) throw e; }
+
+  // index of the event that produced each solution
+  const solAt = [];
+  events.forEach((e,i)=>{ if (e.type==='solution') solAt.push(i); });
+  return {events, solutions, solAt, truncated};
+}
+
+/* ══════════════════════════════════════════════════════
+   3. State + DOM
+   ══════════════════════════════════════════════════════ */
+const boardEl = document.getElementById('board'),
+      raysEl  = document.getElementById('rays'),
+      ranksEl = document.getElementById('ranks'),
+      filesEl = document.getElementById('files'),
+      statusEl= document.getElementById('status'),
+      statusTx= document.getElementById('statusTxt'),
+      scrub   = document.getElementById('scrub'),
+      speedIn = document.getElementById('speed'),
+      solsEl  = document.getElementById('sols'),
+      stackEl = document.getElementById('stack'),
+      warnEl  = document.getElementById('warn'),
+      playBtn = document.getElementById('play');
+
+let N = 6, findAll = false, trace = null, idx = 0, playing = false, cells = [], miniEls = [];
+
+/* n selector */
+const nseg = document.getElementById('nseg');
+nseg.innerHTML = [4,5,6,7,8,9,10,11,12].map(k=>`<button data-n="${k}">${k}</button>`).join('');
+nseg.addEventListener('click', e=>{
+  const b = e.target.closest('button'); if (!b) return;
+  N = +b.dataset.n; rebuild();
+});
+
+/* mode switch */
+const modeSw = document.getElementById('modeSw'), modeTxt = document.getElementById('modeTxt');
+function toggleMode(){
+  findAll = !findAll;
+  modeSw.setAttribute('aria-checked', findAll);
+  modeTxt.textContent = findAll ? 'enumerate every solution' : 'stop at first solution';
+  rebuild();
+}
+modeSw.addEventListener('click', toggleMode);
+modeSw.addEventListener('keydown', e=>{ if (e.key===' '||e.key==='Enter'){ e.preventDefault(); toggleMode(); }});
+
+/* speed: 1 → 400 steps/sec, log scale */
+const sps = () => Math.round(Math.pow(10, 0 + (speedIn.value/100)*2.6));
+function paintSpeed(){ document.getElementById('speedTxt').textContent = sps() + ' /s'; }
+speedIn.addEventListener('input', paintSpeed);
+
+/* ── board construction ── */
+function buildBoard(){
+  boardEl.style.gridTemplateColumns = `repeat(${N},1fr)`;
+  raysEl.setAttribute('viewBox', `0 0 ${N} ${N}`);
+  [...boardEl.querySelectorAll('.sq')].forEach(el=>el.remove());
+  cells = [];
+  const frag = document.createDocumentFragment();
+  for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+    const d = document.createElement('div');
+    d.className = 'sq ' + ((r+c)%2 ? 'dk' : 'lt');
+    d.innerHTML = '<span class="q">♛</span>';
+    d.addEventListener('click', ()=>jumpToSquare(r,c));
+    d.title = `${String.fromCharCode(97+c)}${N-r} — click to jump to the next visit`;
+    frag.appendChild(d); cells.push(d);
+  }
+  boardEl.appendChild(frag);
+  ranksEl.style.gridTemplateRows = `repeat(${N},1fr)`;
+  ranksEl.innerHTML = Array.from({length:N},(_,i)=>`<span>${N-i}</span>`).join('');
+  filesEl.style.gridTemplateColumns = `repeat(${N},1fr)`;
+  filesEl.innerHTML = Array.from({length:N},(_,i)=>`<span>${String.fromCharCode(97+i)}</span>`).join('');
+}
+
+/* ── solutions strip ── */
+function buildStrip(){
+  const shown = trace.solutions.slice(0,120);
+  if (!shown.length){
+    solsEl.innerHTML = '<div class="emptynote">none yet — the strip fills as the search succeeds.</div>';
+    miniEls = [];
+    return;
+  }
+  solsEl.innerHTML = shown.map((s,i)=>{
+    let g = '';
+    for (let r=0;r<N;r++) for (let c=0;c<N;c++)
+      g += `<i class="${s[r]===c?'q':((r+c)%2?'':'l')}"></i>`;
+    return `<button class="mini" data-si="${i}"><div class="mgrid" style="grid-template-columns:repeat(${N},1fr)">${g}</div><span class="cap">#${i+1}</span></button>`;
+  }).join('') + (trace.solutions.length>120
+      ? `<div class="emptynote" style="align-self:center;padding-left:6px">+${trace.solutions.length-120} more</div>` : '');
+  miniEls = [...solsEl.querySelectorAll('.mini')];
+  miniEls.forEach(b=>{
+    b.addEventListener('click', ()=>{ pause(); goto(trace.solAt[+b.dataset.si]); });
+  });
+}
+
+/* ── render one frame ── */
+function render(){
+  const e = trace.events[idx], q = e.q;
+
+  // squares
+  for (let r=0;r<N;r++) for (let c=0;c<N;c++){
+    const el = cells[r*N+c], has = q[r]===c;
+    el.classList.toggle('has', has);
+    el.classList.remove('cursor','bad','attacker','lastrow');
+  }
+  // pop animation for a queen that just landed
+  if (e.type==='place'){
+    const el = cells[e.row*N+e.col];
+    el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+  }
+  // active row hint
+  if (e.row !== undefined && e.row < N && e.type!=='solution')
+    for (let c=0;c<N;c++) cells[e.row*N+c].classList.add('lastrow');
+
+  // candidate / conflict
+  raysEl.innerHTML = '';
+  if (e.type==='try' || e.type==='place' || e.type==='recurse'){
+    if (!q.includes(e.col) || q[e.row]!==e.col) cells[e.row*N+e.col].classList.add('cursor');
+    if (e.type!=='try') cells[e.row*N+e.col].classList.remove('cursor');
+  }
+  if (e.type==='reject'){
+    cells[e.row*N+e.col].classList.add('bad');
+    raysEl.innerHTML = e.att.map(r=>{
+      cells[r*N+q[r]].classList.add('attacker');
+      return `<line x1="${q[r]+.5}" y1="${r+.5}" x2="${e.col+.5}" y2="${e.row+.5}"/>`;
+    }).join('');
+  }
+  if (e.type==='undo') cells[e.row*N+e.col].classList.add('cursor');
+  if (e.type==='solution'){
+    boardEl.classList.remove('win'); void boardEl.offsetWidth; boardEl.classList.add('win');
+  }
+
+  // status
+  statusEl.className = 'status' + (e.type==='reject'||e.type==='undo' ? ' rej' : e.type==='solution'||e.type==='done' ? ' sol' : '');
+  statusTx.innerHTML = e.msg.replace(/\b(\d+)\b/g,'<b>$1</b>');
+
+  // counters
+  document.getElementById('sSteps').textContent  = idx;
+  document.getElementById('sPlaced').textContent = e.placed;
+  document.getElementById('sBack').textContent   = e.backs;
+  document.getElementById('sRej').textContent    = e.rejs;
+  document.getElementById('sSol').textContent    = e.sols;
+
+  // code line
+  lnEls.forEach(el=>el.classList.remove('on'));
+  const active = lnEls[e.line-1];
+  if (active){
+    active.classList.add('on');
+    const top = active.offsetTop, h = codeEl.clientHeight;
+    if (top < codeEl.scrollTop + 24 || top > codeEl.scrollTop + h - 48)
+      codeEl.scrollTo({top: top - h/2, behavior: playing && sps()>30 ? 'auto' : 'smooth'});
+  }
+
+  // call stack
+  let st = '';
+  for (let r=0;r<=Math.min(q.length, N-1); r++){
+    const act = r === q.length;
+    st += `<div class="frameline ${act?'act':''}"><span>place(<b>${r}</b>)</span>${
+      q[r]!==undefined ? `<span class="col">col ${q[r]}</span>` : `<span class="col" style="color:var(--bone-faint)">searching…</span>`}</div>`;
+  }
+  if (q.length === N) st += `<div class="frameline act"><span>place(<b>${N}</b>)</span><span class="col">✦ solution</span></div>`;
+  stackEl.innerHTML = st;
+
+  // occupancy sets
+  const chips = (vals, all) => all.map(v=>
+    `<span class="chip ${vals.has(v)?'on':'gh'}">${v}</span>`).join('');
+  const cSet=new Set(), aSet=new Set(), bSet=new Set();
+  q.forEach((c,r)=>{ cSet.add(c); aSet.add(r-c); bSet.add(r+c); });
+  document.getElementById('setCols').innerHTML = chips(cSet, [...Array(N).keys()]);
+  document.getElementById('setA').innerHTML = chips(aSet, [...aSet].sort((x,y)=>x-y));
+  document.getElementById('setB').innerHTML = chips(bSet, [...bSet].sort((x,y)=>x-y));
+
+  // strip + scrubber
+  miniEls.forEach((b,i)=>{
+    b.classList.toggle('found', idx >= trace.solAt[i]);
+    b.classList.toggle('cur', idx === trace.solAt[i]);
+  });
+  scrub.value = idx;
+  document.getElementById('stepNo').textContent = idx;
+  document.getElementById('back').disabled = idx===0;
+  document.getElementById('fwd').disabled = idx>=trace.events.length-1;
+}
+
+/* ── navigation ── */
+function goto(i){ idx = Math.max(0, Math.min(trace.events.length-1, i)); render(); }
+function stepFwd(){ if (idx < trace.events.length-1){ goto(idx+1); return true; } pause(); return false; }
+/* advance many steps but paint only the final frame */
+function advance(k){
+  const last = trace.events.length-1;
+  if (idx >= last){ pause(); render(); return false; }
+  idx = Math.min(last, idx + k);
+  render();
+  if (idx >= last){ pause(); return false; }
+  return true;
+}
+function jumpToSquare(r,c){
+  pause();
+  for (let k=idx+1; k<trace.events.length; k++){
+    const e = trace.events[k];
+    if ((e.type==='place'||e.type==='reject') && e.row===r && e.col===c){ goto(k); return; }
+  }
+  for (let k=0; k<=idx; k++){
+    const e = trace.events[k];
+    if ((e.type==='place'||e.type==='reject') && e.row===r && e.col===c){ goto(k); return; }
+  }
+  statusTx.textContent = `the search never visits ${String.fromCharCode(97+c)}${N-r} in this trace.`;
+}
+
+/* ── playback ── */
+let raf = null, acc = 0, last = 0;
+function tick(t){
+  if (!playing) return;
+  if (!last) last = t;
+  acc += (t - last) / 1000 * sps(); last = t;
+  let steps = Math.floor(acc);
+  if (steps > 0){
+    acc -= steps;
+    if (!advance(Math.min(steps, 4000))) return;
+  }
+  raf = requestAnimationFrame(tick);
+}
+function play(){
+  if (idx >= trace.events.length-1) goto(0);
+  playing = true; last = 0; acc = 0;
+  playBtn.innerHTML = '❚❚ pause <span class="kbd">space</span>';
+  raf = requestAnimationFrame(tick);
+}
+function pause(){
+  playing = false; if (raf) cancelAnimationFrame(raf);
+  playBtn.innerHTML = '▶ play <span class="kbd">space</span>';
+}
+function toggle(){ playing ? pause() : play(); }
+
+/* ── rebuild for a new n / mode ── */
+function rebuild(){
+  pause();
+  [...nseg.children].forEach(b=>b.setAttribute('aria-pressed', +b.dataset.n===N));
+  trace = buildTrace(N, findAll);
+  idx = 0;
+  scrub.max = trace.events.length-1;
+  document.getElementById('stepTot').textContent = '/ ' + (trace.events.length-1);
+  buildBoard(); buildStrip();
+  warnEl.classList.toggle('hidden', !trace.truncated);
+  if (trace.truncated)
+    warnEl.textContent = `trace capped at ${MAX_EVENTS.toLocaleString()} steps — n=${N} with full enumeration is bigger than this page will hold. Switch back to “stop at first solution” for the complete story.`;
+  render();
+}
+
+/* ── wiring ── */
+playBtn.addEventListener('click', toggle);
+document.getElementById('fwd').addEventListener('click', ()=>{ pause(); stepFwd(); });
+document.getElementById('back').addEventListener('click', ()=>{ pause(); goto(idx-1); });
+document.getElementById('reset').addEventListener('click', ()=>{ pause(); goto(0); });
+document.getElementById('end').addEventListener('click', ()=>{ pause(); goto(trace.events.length-1); });
+scrub.addEventListener('input', ()=>{ pause(); goto(+scrub.value); });
+document.addEventListener('keydown', e=>{
+  if (e.target.tagName==='INPUT' && e.key!==' ') return;
+  if (e.key===' '){ e.preventDefault(); toggle(); }
+  else if (e.key==='ArrowRight'){ e.preventDefault(); pause(); stepFwd(); }
+  else if (e.key==='ArrowLeft'){ e.preventDefault(); pause(); goto(idx-1); }
+  else if (e.key==='r'||e.key==='R'){ pause(); goto(0); }
+});
+
+paintSpeed();
+rebuild();
+</script>
+</body>
+</html>
