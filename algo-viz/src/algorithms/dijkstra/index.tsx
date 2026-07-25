@@ -5,7 +5,14 @@ import type { TraceEvent } from '@/lib/trace';
 import GraphStage from './GraphStage';
 import styles from './GraphStage.module.css';
 import { buildGraph, nodeName, SIZES, type GraphSize } from './graph';
-import { buildDijkstraTrace, CODE, type DijkstraParams, type DijkstraPayload } from './trace';
+import {
+  buildDijkstraTrace,
+  CODE,
+  PY_CODE,
+  PY_LINE,
+  type DijkstraParams,
+  type DijkstraPayload,
+} from './trace';
 
 const SIZE_LABELS: Record<GraphSize, string> = {
   small: '9 nodes',
@@ -105,6 +112,8 @@ export default defineAlgorithm<DijkstraParams, DijkstraPayload>({
     'Grow a set of settled nodes outward from the source, always taking the cheapest frontier node next. Once a node is settled, no cheaper route to it can exist.',
   fnName: 'dijkstra',
   code: CODE,
+  pyCode: PY_CODE,
+  pyLine: PY_LINE,
   stats: [
     { key: 'settled', label: 'Settled', tone: 'gold' },
     { key: 'scanned', label: 'Edges seen' },

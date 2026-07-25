@@ -38,8 +38,14 @@ export interface AlgorithmDef<Params, P> {
   blurb: string;
   /** Name of the function shown in the code panel header. */
   fnName: string;
+  /** Header name when Python is selected; falls back to fnName. */
+  pyFnName?: string;
   /** The source, one string per line. Event `line` numbers index into this. */
   code: string[];
+  /** Python rendering of the same source, toggled in the code panel. */
+  pyCode: string[];
+  /** JS event line → Python line. Unmapped lines highlight nothing. */
+  pyLine: Record<number, number>;
   stats: StatSpec[];
   defaultParams: Params;
   build(params: Params): Trace<P>;

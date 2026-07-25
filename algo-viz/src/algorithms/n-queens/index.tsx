@@ -4,7 +4,14 @@ import { defineAlgorithm } from '@/lib/algorithm';
 import type { Trace, TraceEvent } from '@/lib/trace';
 import Board from './Board';
 import boardStyles from './Board.module.css';
-import { buildNQueensTrace, CODE, type NQueensParams, type NQueensPayload } from './trace';
+import {
+  buildNQueensTrace,
+  CODE,
+  PY_CODE,
+  PY_LINE,
+  type NQueensParams,
+  type NQueensPayload,
+} from './trace';
 
 const SIZES = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -143,7 +150,10 @@ export default defineAlgorithm<NQueensParams, NQueensPayload>({
   blurb:
     'Place n queens on an n×n board so that no two share a row, column, or diagonal. Step the search, watch it fail, watch it undo.',
   fnName: 'solveNQueens',
+  pyFnName: 'solve_n_queens',
   code: CODE,
+  pyCode: PY_CODE,
+  pyLine: PY_LINE,
   stats: [
     { key: 'placed', label: 'Placed', tone: 'gold' },
     { key: 'backtracks', label: 'Backtracks', tone: 'red' },

@@ -1,18 +1,19 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { tokenize } from '@/lib/highlight';
+import { tokenize, type Lang } from '@/lib/highlight';
 import styles from './CodePanel.module.css';
 
 interface Props {
   code: string[];
+  lang?: Lang;
   /** 1-indexed line to highlight, or 0 for none. */
   activeLine: number;
   /** Skip smooth scrolling while the trace is running fast. */
   instant?: boolean;
 }
 
-export default function CodePanel({ code, activeLine, instant = false }: Props) {
+export default function CodePanel({ code, lang = 'js', activeLine, instant = false }: Props) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +43,7 @@ export default function CodePanel({ code, activeLine, instant = false }: Props) 
           >
             <span className={styles.gutter}>{number}</span>
             <span className={styles.text}>
-              {tokenize(line).map((token, j) => (
+              {tokenize(line, lang).map((token, j) => (
                 <span key={j} className={styles[token.kind]}>
                   {token.text}
                 </span>

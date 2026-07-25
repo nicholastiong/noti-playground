@@ -30,7 +30,7 @@ export const CODE = [
   '  const dist  = new Map();      // best cost found so far',
   '  const prev  = new Map();      // predecessor on that best path',
   '  const done  = new Set();      // nodes whose cost is final',
-  '  const queue = new MinQueue(); // frontier, ordered by cost',
+  '  const queue = new MinQueue(); // frontier, ordered by cost — lazy deletion',
   '',
   '  dist.set(source, 0);',
   '  queue.push(source, 0);',
@@ -56,6 +56,26 @@ export const CODE = [
   '',
   '  return walkBack(prev, target);     // follow predecessors to the source',
   '}',
+  '',
+  'function walkBack(prev, target) {    // rebuild the route from the prev links',
+  '  const path = [];',
+  '  for (let at = target; at !== undefined; at = prev.get(at)) {',
+  '    path.unshift(at);                // prepend, so it reads source → target',
+  '  }',
+  '  return path;',
+  '}',
+  '',
+  'class MinQueue {                     // frontier: push duplicates, pop the cheapest',
+  '  items = [];',
+  '  push(node, cost) { this.items.push({ node, cost }); }',
+  '  isEmpty() { return this.items.length === 0; }',
+  '  pop() {                            // linear scan — a binary heap in real code',
+  '    let best = 0;',
+  '    for (let i = 1; i < this.items.length; i++)',
+  '      if (this.items[i].cost < this.items[best].cost) best = i;',
+  '    return this.items.splice(best, 1)[0].node;',
+  '  }',
+  '}',
 ];
 
 const LINE = {
@@ -71,6 +91,64 @@ const LINE = {
   relax: 22,
   walk: 29,
 } as const;
+
+/** The classic lazy Dijkstra in Python — heapq plus stale-entry skipping. */
+export const PY_CODE = [
+  'import heapq',
+  '',
+  'def dijkstra(graph, source, target):',
+  '    dist = {source: 0}    # best cost found so far',
+  '    prev = {}             # predecessor on that best path',
+  '    done = set()          # nodes whose cost is final',
+  '    heap = [(0, source)]  # frontier, ordered by cost — lazy deletion',
+  '',
+  '    while heap:',
+  '        d, u = heapq.heappop(heap)  # nearest unsettled node',
+  '        if u in done:',
+  '            continue                # stale entry — already settled',
+  '        done.add(u)                 # dist[u] can never improve now',
+  '',
+  '        if u == target:',
+  '            break                   # the goal is settled, we are finished',
+  '',
+  '        for v, w in graph.edges(u):',
+  '            if v in done:',
+  '                continue            # its cost is already final',
+  '',
+  '            alt = d + w             # cost of reaching v through u',
+  '            if alt < dist.get(v, float("inf")):',
+  '                dist[v] = alt       # relax: a cheaper route to v',
+  '                prev[v] = u',
+  '                heapq.heappush(heap, (alt, v))',
+  '',
+  '    return walk_back(prev, target)  # follow predecessors to the source',
+  '',
+  'def walk_back(prev, target):',
+  '    path = []',
+  '    at = target',
+  '    while at is not None:       # step backwards along the prev links',
+  '        path.insert(0, at)      # prepend, so it reads source → target',
+  '        at = prev.get(at)',
+  '    return path',
+];
+
+const PY = {
+  seed: 7,
+  loop: 9,
+  pop: 10,
+  stale: 12,
+  settle: 13,
+  goal: 16,
+  scan: 18,
+  skip: 20,
+  compare: 23,
+  relax: 24,
+  walk: 28,
+} as const satisfies Record<keyof typeof LINE, number>;
+
+export const PY_LINE: Record<number, number> = Object.fromEntries(
+  (Object.keys(LINE) as (keyof typeof LINE)[]).map((key) => [LINE[key], PY[key]]),
+);
 
 /** Frontier ordered by cost, with lazy deletion — the classic simple version. */
 class MinQueue {

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { AnyAlgorithmDef, Tone } from '@/lib/algorithm';
+import type { Lang } from '@/lib/highlight';
 import type { TraceEvent } from '@/lib/trace';
 import { useTracePlayer } from '@/lib/useTracePlayer';
 import CodePanel from './CodePanel';
@@ -16,6 +17,7 @@ import styles from './VisualizerFrame.module.css';
  */
 export default function VisualizerFrame({ def }: { def: AnyAlgorithmDef }) {
   const [params, setParams] = useState(def.defaultParams);
+  const [lang, setLang] = useState<Lang>('js');
 
   // Re-running the algorithm is the expensive part, so it is keyed on params.
   const trace = useMemo(() => def.build(params), [def, params]);
@@ -119,8 +121,18 @@ export default function VisualizerFrame({ def }: { def: AnyAlgorithmDef }) {
       {/* ══════════ source ══════════ */}
       <section className={styles.right}>
         <div className={styles.codeHead}>
-          <span className={styles.fnName}>{def.fnName}</span>
-          <span className={styles.codeTag}>javascript · line-synced</span>
+          <span className={styles.fnName}>
+            {lang === 'py' ? (def.pyFnName ?? def.fnName) : def.fnName}
+          </span>
+          <span className={styles.codeTag}>line-synced</span>
+          <div className="seg">
+            <button aria-pressed={lang === 'js'} onClick={() => setLang('js')}>
+              JS
+            </button>
+            <button aria-pressed={lang === 'py'} onClick={() => setLang('py')}>
+              Python
+            </button>
+          </div>
         </div>
 
         {trace.truncated && (
@@ -131,8 +143,9 @@ export default function VisualizerFrame({ def }: { def: AnyAlgorithmDef }) {
         )}
 
         <CodePanel
-          code={def.code}
-          activeLine={event.line}
+          code={lang === 'py' ? def.pyCode : def.code}
+          lang={lang}
+          activeLine={lang === 'py' ? (def.pyLine[event.line] ?? 0) : event.line}
           instant={player.playing && player.rate > 30}
         />
 

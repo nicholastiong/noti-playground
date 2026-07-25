@@ -66,6 +66,59 @@ const LINE = {
   done: 34,
 } as const;
 
+/** The same algorithm in Python, for the code panel's language toggle. */
+export const PY_CODE = [
+  'def solve_n_queens(n):',
+  '    solutions = []',
+  '    queens = []      # queens[r] = column of queen in row r',
+  '    cols   = set()   # columns already occupied',
+  '    diag_a = set()   # ↘ diagonals, keyed by row - col',
+  '    diag_b = set()   # ↙ diagonals, keyed by row + col',
+  '',
+  '    def place(row):',
+  '        if row == n:                     # every row filled',
+  '            solutions.append(queens[:])  # record a solution',
+  '            return',
+  '',
+  '        for col in range(n):',
+  '            if (col in cols or',
+  '                    row - col in diag_a or',
+  '                    row + col in diag_b):',
+  '                continue                 # square is attacked',
+  '',
+  '            queens.append(col)           # commit: place the queen',
+  '            cols.add(col)',
+  '            diag_a.add(row - col)',
+  '            diag_b.add(row + col)',
+  '',
+  '            place(row + 1)               # descend to the next row',
+  '',
+  '            queens.pop()                 # undo the choice',
+  '            cols.discard(col)',
+  '            diag_a.discard(row - col)',
+  '            diag_b.discard(row + col)',
+  '        # every column tried — fall back to the previous row',
+  '',
+  '    place(0)',
+  '    return solutions',
+];
+
+const PY = {
+  call: 8,
+  solution: 10,
+  try: 13,
+  reject: 17,
+  place: 19,
+  recurse: 24,
+  undo: 26,
+  exhaust: 30,
+  done: 33,
+} as const satisfies Record<keyof typeof LINE, number>;
+
+export const PY_LINE: Record<number, number> = Object.fromEntries(
+  (Object.keys(LINE) as (keyof typeof LINE)[]).map((key) => [LINE[key], PY[key]]),
+);
+
 /** Algebraic-ish name for a square, so the commentary reads like chess notation. */
 function square(row: number, col: number, n: number): string {
   return `${String.fromCharCode(97 + col)}${n - row}`;
